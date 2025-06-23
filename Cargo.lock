@@ -582,6 +582,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "flappy-dragon"
+version = "0.1.0"
+dependencies = [
+ "bracket-lib",
+]
+
+[[package]]
 name = "flate2"
 version = "1.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -764,13 +771,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "3da5951a1569dbab865c6f2a863efafff193a93caf05538d193e9e3816d21696"
 dependencies = [
  "gl_generator",
-]
-
-[[package]]
-name = "hands-on-rust-exercises"
-version = "0.1.0"
-dependencies = [
- "bracket-lib",
 ]
 
 [[package]]

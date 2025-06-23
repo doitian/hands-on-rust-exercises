@@ -1,7 +1,5 @@
-[package]
-name = "hands-on-rust-exercises"
-version = "0.1.0"
-edition = "2024"
-
-[dependencies]
-bracket-lib = "0.8.7"
+[workspace]
+resolver = "3"
+members = [
+  "crates/flappy-dragon"
+]
