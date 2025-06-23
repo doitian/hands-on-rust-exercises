@@ -154,6 +154,7 @@ impl State {
     fn end_game(&mut self, ctx: &mut BTerm) {
         ctx.cls();
         ctx.print_centered(5, "Game Over!");
+        ctx.print_centered(6, format!("You earned {} points", self.score));
         ctx.print_centered(8, "(P) Play Again");
         ctx.print_centered(9, "(Q) Quit Game");
         if ctx.key == Some(VirtualKeyCode::P) {
