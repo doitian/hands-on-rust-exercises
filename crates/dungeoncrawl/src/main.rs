@@ -1,11 +1,15 @@
 use bracket_lib::prelude::*;
 
 mod map;
+mod map_builder;
 mod player;
 mod screen;
 
-use map::Map;
-use player::Player;
+use crate::{
+    map::{Map, TileType},
+    map_builder::MapBuilder,
+    player::Player,
+};
 
 pub struct State {
     map: Map,
@@ -14,9 +18,13 @@ pub struct State {
 
 impl State {
     fn new() -> Self {
+        let mut map_builder = MapBuilder::new();
+        map_builder.fill(TileType::Wall);
+        map_builder.build_random_room(&mut RandomNumberGenerator::new());
+
         State {
-            map: Map::new(),
-            player: Player::new(Point::new(5, 5)),
+            map: map_builder.map,
+            player: Player::new(map_builder.player_start),
         }
     }
 }
