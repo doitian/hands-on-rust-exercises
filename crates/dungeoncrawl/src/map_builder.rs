@@ -28,7 +28,9 @@ impl MapBuilder {
         self.map.fill_tiles(TileType::Wall);
         self.rooms.clear();
         self.player_start = Point::new(0, 0);
-        self.build_random_room(&mut RandomNumberGenerator::new());
+        let mut rng = RandomNumberGenerator::new();
+        self.build_random_room(&mut rng);
+        self.build_corridors(&mut rng);
     }
 
     pub fn build_random_room(&mut self, rng: &mut RandomNumberGenerator) {
@@ -41,6 +43,44 @@ impl MapBuilder {
 
         if let Some(first_room) = self.rooms.first() {
             self.player_start = first_room.center();
+        }
+    }
+
+    pub fn apply_vertical_tunnel(&mut self, y1: i32, y2: i32, x: i32) {
+        use std::cmp::{max, min};
+        for y in min(y1, y2)..=max(y1, y2) {
+            let point = Point::new(x, y);
+            if self.map.in_bounds(point) {
+                self.map.fill_tile_at(point, TileType::Floor);
+            }
+        }
+    }
+
+    pub fn apply_horizontal_tunnel(&mut self, x1: i32, x2: i32, y: i32) {
+        use std::cmp::{max, min};
+        for x in min(x1, x2)..=max(x1, x2) {
+            let point = Point::new(x, y);
+            if self.map.in_bounds(point) {
+                self.map.fill_tile_at(point, TileType::Floor);
+            }
+        }
+    }
+
+    pub fn build_corridors(&mut self, rng: &mut RandomNumberGenerator) {
+        let mut rooms = self.rooms.clone();
+        rooms.sort_by_key(|r| r.center().x);
+
+        for w in rooms.windows(2) {
+            let start = w[0].center();
+            let end = w[1].center();
+
+            if rng.range(0, 2) == 1 {
+                self.apply_horizontal_tunnel(start.x, end.x, start.y);
+                self.apply_vertical_tunnel(start.y, end.y, end.x);
+            } else {
+                self.apply_vertical_tunnel(start.y, end.y, start.x);
+                self.apply_horizontal_tunnel(start.x, end.x, end.y);
+            }
         }
     }
 
