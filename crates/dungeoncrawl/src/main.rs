@@ -5,11 +5,7 @@ mod map_builder;
 mod player;
 mod screen;
 
-use crate::{
-    map::{Map, TileType},
-    map_builder::MapBuilder,
-    player::Player,
-};
+use crate::{map::Map, map_builder::MapBuilder, player::Player};
 
 pub struct State {
     map: Map,
@@ -19,8 +15,7 @@ pub struct State {
 impl State {
     fn new() -> Self {
         let mut map_builder = MapBuilder::new();
-        map_builder.fill(TileType::Wall);
-        map_builder.build_random_room(&mut RandomNumberGenerator::new());
+        map_builder.build();
 
         State {
             map: map_builder.map,

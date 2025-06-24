@@ -24,10 +24,11 @@ impl MapBuilder {
         }
     }
 
-    pub fn fill(&mut self, tile: TileType) {
-        self.map.tiles.iter_mut().for_each(|t| {
-            *t = tile;
-        });
+    pub fn build(&mut self) {
+        self.map.fill_tiles(TileType::Wall);
+        self.rooms.clear();
+        self.player_start = Point::new(0, 0);
+        self.build_random_room(&mut RandomNumberGenerator::new());
     }
 
     pub fn build_random_room(&mut self, rng: &mut RandomNumberGenerator) {
@@ -49,9 +50,7 @@ impl MapBuilder {
 
     fn add_room(&mut self, room: Rect) {
         room.for_each(|p| {
-            if let Some(idx) = self.map.try_idx(p) {
-                self.map.tiles[idx] = TileType::Floor;
-            }
+            self.map.fill_tile_at(p, TileType::Floor);
         });
         self.rooms.push(room);
     }

@@ -36,6 +36,21 @@ impl Map {
         self.in_bounds(point).then(|| map_idx(point.x, point.y))
     }
 
+    pub fn fill_tile_at(&mut self, point: Point, tile: TileType) -> bool {
+        if let Some(idx) = self.try_idx(point) {
+            self.tiles[idx] = tile;
+            true
+        } else {
+            false
+        }
+    }
+
+    pub fn fill_tiles(&mut self, tile: TileType) {
+        self.tiles.iter_mut().for_each(|t| {
+            *t = tile;
+        });
+    }
+
     pub fn render(&self, ctx: &mut BTerm) {
         for y in 0..SCREEN_HEIGHT {
             for x in 0..SCREEN_WIDTH {
