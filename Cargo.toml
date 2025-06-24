@@ -1,5 +1,6 @@
 [workspace]
 resolver = "3"
-members = [ "crates/dungeoncrawl",
-  "crates/flappy-dragon"
-]
+members = ["crates/dungeoncrawl", "crates/flappy-dragon"]
+
+[workspace.dependencies]
+bracket-lib = "0.8.7"
