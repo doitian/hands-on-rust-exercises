@@ -1,6 +1,6 @@
 use bracket_lib::prelude::*;
 
-use crate::map::Map;
+use crate::{camera::Camera, map::Map};
 
 pub struct Player {
     pub position: Point,
@@ -35,10 +35,11 @@ impl Player {
         }
     }
 
-    pub fn render(&self, ctx: &mut BTerm) {
+    pub fn render(&self, ctx: &mut BTerm, camera: &Camera) {
+        ctx.set_active_console(1);
         ctx.set(
-            self.position.x,
-            self.position.y,
+            self.position.x - camera.left_x,
+            self.position.y - camera.top_y,
             WHITE,
             BLACK,
             to_cp437('@'),
