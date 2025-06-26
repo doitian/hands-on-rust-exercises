@@ -35,6 +35,7 @@ impl State {
         });
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
+        resources.insert(rng);
 
         Self {
             ecs,
