@@ -23,10 +23,20 @@ impl Camera {
     }
 
     pub fn on_player_move(&mut self, player_position: Point) {
-        let new_camera = Self::new(player_position);
-        if *self != new_camera {
-            println!("new camera: {:?}", new_camera);
-        }
-        *self = new_camera;
+        *self = Self::new(player_position);
+    }
+
+    pub fn world_to_view(&self, world_position: Point) -> Point {
+        Point::new(
+            world_position.x - self.left_x,
+            world_position.y - self.top_y,
+        )
+    }
+
+    pub fn is_in_view(&self, world_position: Point) -> bool {
+        world_position.x >= self.left_x
+            && world_position.x < self.right_x
+            && world_position.y >= self.top_y
+            && world_position.y < self.bottom_y
     }
 }

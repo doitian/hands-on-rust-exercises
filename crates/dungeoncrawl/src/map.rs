@@ -1,7 +1,4 @@
-use crate::{
-    camera::Camera,
-    screen::{SCREEN_HEIGHT, SCREEN_WIDTH},
-};
+use crate::screen::{SCREEN_HEIGHT, SCREEN_WIDTH};
 use bracket_lib::prelude::*;
 
 const NUM_TILES: usize = SCREEN_WIDTH as usize * (SCREEN_HEIGHT as usize);
@@ -52,32 +49,5 @@ impl Map {
         self.tiles.iter_mut().for_each(|t| {
             *t = tile;
         });
-    }
-
-    pub fn render(&self, ctx: &mut BTerm, camera: &Camera) {
-        ctx.set_active_console(0);
-
-        for y in camera.top_y..camera.bottom_y {
-            for x in camera.left_x..camera.right_x {
-                if let Some(idx) = self.try_idx(Point::new(x, y)) {
-                    match self.tiles[idx] {
-                        TileType::Floor => ctx.set(
-                            x - camera.left_x,
-                            y - camera.top_y,
-                            WHITE,
-                            BLACK,
-                            to_cp437('.'),
-                        ),
-                        TileType::Wall => ctx.set(
-                            x - camera.left_x,
-                            y - camera.top_y,
-                            WHITE,
-                            BLACK,
-                            to_cp437('#'),
-                        ),
-                    }
-                }
-            }
-        }
     }
 }

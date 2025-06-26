@@ -4,3 +4,4 @@ members = ["crates/dungeoncrawl", "crates/flappy-dragon"]
 
 [workspace.dependencies]
 bracket-lib = "0.8.7"
+legion = "0.4.0"
