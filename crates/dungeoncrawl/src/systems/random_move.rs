@@ -23,9 +23,9 @@ fn player_has_moved(key: &Option<VirtualKeyCode>) -> bool {
 pub fn random_move(
     world: &mut SubWorld,
     query: &mut Query<(&mut Point, &MovingRandomly)>,
+    #[state] rng: &mut RandomNumberGenerator,
     #[resource] map: &Map,
     #[resource] key: &Option<VirtualKeyCode>,
-    #[resource] rng: &mut RandomNumberGenerator,
 ) {
     if player_has_moved(key) {
         query.for_each_mut(world, |(position, _)| {
