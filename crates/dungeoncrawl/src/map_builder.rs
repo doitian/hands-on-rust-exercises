@@ -24,13 +24,12 @@ impl MapBuilder {
         }
     }
 
-    pub fn build(&mut self) {
+    pub fn build(&mut self, rng: &mut RandomNumberGenerator) {
         self.map.fill_tiles(TileType::Wall);
         self.rooms.clear();
         self.player_start = Point::new(0, 0);
-        let mut rng = RandomNumberGenerator::new();
-        self.build_random_room(&mut rng);
-        self.build_corridors(&mut rng);
+        self.build_random_room(rng);
+        self.build_corridors(rng);
     }
 
     pub fn build_random_room(&mut self, rng: &mut RandomNumberGenerator) {

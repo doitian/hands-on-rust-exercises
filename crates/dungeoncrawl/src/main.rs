@@ -10,7 +10,10 @@ mod spawner;
 mod systems;
 
 use crate::{
-    camera::Camera, map_builder::MapBuilder, spawner::spawn_player, systems::build_scheduler,
+    camera::Camera,
+    map_builder::MapBuilder,
+    spawner::{spawn_monster, spawn_player},
+    systems::build_scheduler,
 };
 
 pub struct State {
@@ -23,9 +26,13 @@ impl State {
     fn new() -> Self {
         let mut ecs = World::default();
         let mut resources = Resources::default();
+        let mut rng = RandomNumberGenerator::new();
         let mut map_builder = MapBuilder::new();
-        map_builder.build();
+        map_builder.build(&mut rng);
         spawn_player(&mut ecs, map_builder.player_start);
+        map_builder.rooms.iter().skip(1).for_each(|r| {
+            spawn_monster(&mut ecs, &mut rng, r.center());
+        });
         resources.insert(map_builder.map);
         resources.insert(Camera::new(map_builder.player_start));
 
