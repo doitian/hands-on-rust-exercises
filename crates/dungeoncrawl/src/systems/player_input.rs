@@ -1,15 +1,18 @@
 use bracket_lib::prelude::*;
-use legion::{component, system};
+use legion::{Entity, component, system, systems::CommandBuffer};
 
-use crate::{camera::Camera, components::Player, map::Map, state::TurnState};
+use crate::{
+    components::{Player, WantsToMove},
+    state::TurnState,
+};
 
 #[system(for_each)]
 #[filter(component::<Player>())]
 pub fn player_input(
+    entity: &Entity,
     position: &mut Point,
-    #[resource] map: &Map,
+    cmd: &mut CommandBuffer,
     #[resource] key: &Option<VirtualKeyCode>,
-    #[resource] camera: &mut Camera,
     #[resource] turn_state: &mut TurnState,
 ) {
     if let Some(key) = key {
@@ -21,10 +24,10 @@ pub fn player_input(
             _ => return,
         };
         let destination = *position + transform;
-        if map.can_enter_tile(destination) {
-            *position = destination;
-            camera.on_player_move(destination);
-            *turn_state = TurnState::PlayerTurn;
-        }
+        cmd.push((WantsToMove {
+            entity: *entity,
+            destination,
+        },));
+        *turn_state = TurnState::PlayerTurn;
     }
 }

@@ -1,16 +1,16 @@
 use bracket_lib::prelude::*;
-use legion::{Query, system, world::SubWorld};
+use legion::{Entity, Query, system, systems::CommandBuffer, world::SubWorld};
 
-use crate::{components::MovingRandomly, map::Map};
+use crate::components::{MovingRandomly, WantsToMove};
 
 #[system]
 pub fn random_move(
     world: &mut SubWorld,
-    query: &mut Query<(&mut Point, &MovingRandomly)>,
+    query: &mut Query<(Entity, &mut Point, &MovingRandomly)>,
+    cmd: &mut CommandBuffer,
     #[state] rng: &mut RandomNumberGenerator,
-    #[resource] map: &Map,
 ) {
-    query.for_each_mut(world, |(position, _)| {
+    query.for_each_mut(world, |(entity, position, _)| {
         let direction = match rng.range(0, 4) {
             0 => Point::new(0, -1), // Up
             1 => Point::new(0, 1),  // Down
@@ -18,8 +18,9 @@ pub fn random_move(
             _ => Point::new(1, 0),  // Right
         };
         let destination = *position + direction;
-        if map.can_enter_tile(destination) {
-            *position = destination;
-        }
+        cmd.push((WantsToMove {
+            entity: *entity,
+            destination,
+        },));
     });
 }
