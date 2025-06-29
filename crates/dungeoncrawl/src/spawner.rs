@@ -1,7 +1,7 @@
 use bracket_lib::prelude::*;
 use legion::{Entity, World};
 
-use crate::components::{Enemy, MovingRandomly, Player, Render};
+use crate::components::{Enemy, Health, MovingRandomly, Player, Render};
 
 pub fn spawn_player(ecs: &mut World, pos: Point) -> Entity {
     ecs.push((
@@ -10,6 +10,10 @@ pub fn spawn_player(ecs: &mut World, pos: Point) -> Entity {
         Render {
             color: ColorPair::new(WHITE, BLACK),
             glyph: to_cp437('@'),
+        },
+        Health {
+            current: 20,
+            max: 20,
         },
     ))
 }
