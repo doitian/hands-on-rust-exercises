@@ -1,62 +1,17 @@
-use bracket_lib::prelude::*;
-use legion::{Resources, Schedule, World};
-
 mod camera;
 mod components;
 mod map;
 mod map_builder;
 mod screen;
 mod spawner;
+mod state;
 mod systems;
 
-use crate::{
-    camera::Camera,
-    map_builder::MapBuilder,
-    spawner::{spawn_monster, spawn_player},
-    systems::build_scheduler,
-};
+use bracket_lib::prelude::*;
 
-pub struct State {
-    ecs: World,
-    resources: Resources,
-    systems: Schedule,
-}
-
-impl State {
-    fn new() -> Self {
-        let mut ecs = World::default();
-        let mut resources = Resources::default();
-        let mut rng = RandomNumberGenerator::new();
-        let mut map_builder = MapBuilder::new();
-        map_builder.build(&mut rng);
-        spawn_player(&mut ecs, map_builder.player_start);
-        map_builder.rooms.iter().skip(1).for_each(|r| {
-            spawn_monster(&mut ecs, &mut rng, r.center());
-        });
-        resources.insert(map_builder.map);
-        resources.insert(Camera::new(map_builder.player_start));
-
-        Self {
-            ecs,
-            resources,
-            systems: build_scheduler(),
-        }
-    }
-}
-
-impl GameState for State {
-    fn tick(&mut self, ctx: &mut BTerm) {
-        ctx.set_active_console(0);
-        ctx.cls();
-        ctx.set_active_console(1);
-        ctx.cls();
-        self.resources.insert(ctx.key);
-        self.systems.execute(&mut self.ecs, &mut self.resources);
-        render_draw_buffer(ctx).expect("Render error");
-    }
-}
+use crate::{screen::build_screen_context, state::State};
 
 fn main() -> BError {
-    let context = screen::build_screen_context()?;
+    let context = build_screen_context()?;
     main_loop(context, State::new())
 }

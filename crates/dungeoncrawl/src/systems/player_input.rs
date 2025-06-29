@@ -1,7 +1,7 @@
 use bracket_lib::prelude::*;
 use legion::{component, system};
 
-use crate::{camera::Camera, components::Player, map::Map};
+use crate::{camera::Camera, components::Player, map::Map, state::TurnState};
 
 #[system(for_each)]
 #[filter(component::<Player>())]
@@ -10,6 +10,7 @@ pub fn player_input(
     #[resource] map: &Map,
     #[resource] key: &Option<VirtualKeyCode>,
     #[resource] camera: &mut Camera,
+    #[resource] turn_state: &mut TurnState,
 ) {
     if let Some(key) = key {
         let transform = match key {
@@ -23,6 +24,7 @@ pub fn player_input(
         if map.can_enter_tile(destination) {
             *position = destination;
             camera.on_player_move(destination);
+            *turn_state = TurnState::PlayerTurn;
         }
     }
 }
